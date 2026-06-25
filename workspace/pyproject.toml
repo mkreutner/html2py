@@ -1,0 +1,17 @@
+[project]
+name = "workspace"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Michel Kreutner"}
+]
+requires-python = ">=3.14"
+dependencies = [
+    "weasyprint (>=69.0,<70.0)",
+    "pango (>=0.0.1,<0.0.2)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,45 @@
+FROM python:3.14.4-alpine3.22
+
+ARG UID=1000
+ARG GID=1000
+ARG USERNAME=developer
+
+# 1. Installation des dépendances système
+# On installe 'shadow' pour modifier l'user, 'bash' pour Poetry,
+# et 'build-base' si vous avez des packages C à compiler.
+RUN apk add --no-cache \
+  shadow \
+  bash \
+  curl \
+  git \
+  sudo \
+  tzdata \
+  build-base \
+  libffi-dev \
+  glib \
+  pango \
+  cairo \
+  gdk-pixbuf \
+  libffi \
+  shared-mime-info \
+  ttf-dejavu
+
+# 2. Création et configuration de l'utilisateur
+# Sur Alpine, on utilise shadow (usermod/groupmod) pour être précis
+RUN groupadd -g "${GID}" "${USERNAME}" \
+  && useradd -u "${UID}" -g "${GID}" -m -s /bin/bash "${USERNAME}" \
+  && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USERNAME}
+
+# 3. Installation de Poetry en tant qu'utilisateur
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
+
+# On installe Poetry via le script officiel
+ENV POETRY_HOME="/home/${USERNAME}/.local"
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="${POETRY_HOME}/bin:$PATH"
+
+# Configuration de Poetry : on crée le virtualenv dans le dossier du projet
+# Très pratique pour que l'IDE (VS Code/PyCharm) le détecte sur l'hôte
+RUN poetry config virtualenvs.in-project true
+

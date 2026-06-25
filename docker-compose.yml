@@ -1,0 +1,34 @@
+services:
+  html2py:
+    build:
+      context: ./docker/html2py
+      dockerfile: Dockerfile.${ENVIRONMENT}
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USERNAME: ${USERNAME:-sid}
+    container_name: html2py-${PROJECT}-${ENVIRONMENT}
+    hostname: html2py
+    tty: true
+    stdin_open: true
+    volumes:
+      - "developer-home:/home/${USERNAME:-sid}"
+      - "./workspace:/home/${USERNAME:-sid}/workspace"
+    user: "${USERNAME:-sid}"
+    working_dir: "/home/${USERNAME:-developer}/workspace"
+    env_file:
+      - .env
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1 # Évite les fichiers .pyc sur l'hôte
+      - PYTHONUNBUFFERED=1
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    name: internal-network-${PROJECT}-${ENVIRONMENT}
+    driver: bridge
+
+volumes:
+  developer-home:
+    name: developer-home-${PROJECT}-${ENVIRONMENT}

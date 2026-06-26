@@ -8,27 +8,30 @@ ARG USERNAME=developer
 # On installe 'shadow' pour modifier l'user, 'bash' pour Poetry,
 # et 'build-base' si vous avez des packages C à compiler.
 RUN apk add --no-cache \
-  shadow \
-  bash \
-  curl \
-  git \
-  sudo \
-  tzdata \
-  build-base \
-  libffi-dev \
-  glib \
-  pango \
-  cairo \
-  gdk-pixbuf \
-  libffi \
-  shared-mime-info \
-  ttf-dejavu
+	shadow \
+	bash \
+	curl \
+	git \
+	sudo \
+	tzdata \
+	build-base \
+	libffi-dev \
+	glib \
+	pango \
+	cairo \
+	gdk-pixbuf \
+	libffi \
+	shared-mime-info \
+	ttf-dejavu \
+	font-awesome-free \
+	font-noto-emoji \
+	noto-emoji  
 
 # 2. Création et configuration de l'utilisateur
 # Sur Alpine, on utilise shadow (usermod/groupmod) pour être précis
 RUN groupadd -g "${GID}" "${USERNAME}" \
-  && useradd -u "${UID}" -g "${GID}" -m -s /bin/bash "${USERNAME}" \
-  && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USERNAME}
+	&& useradd -u "${UID}" -g "${GID}" -m -s /bin/bash "${USERNAME}" \
+	&& echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USERNAME}
 
 # 3. Installation de Poetry en tant qu'utilisateur
 USER ${USERNAME}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
-from weasyprint import HTML
+from weasyprint import HTML, CSS
 
 
 def generate_pdf(html_path, output_path=None):
@@ -23,11 +23,12 @@ def generate_pdf(html_path, output_path=None):
     print("⏳ Génération du PDF en cours...")
 
     try:
+        css = CSS(f"{base_dir}/style.css")
         # L'argument magique 'base_url' permet à WeasyPrint de lier le HTML, le CSS et le dossier img/
         html_doc = HTML(filename=html_path, base_url=base_dir)
 
         # Génération effective du PDF
-        html_doc.write_pdf(output_path)
+        html_doc.write_pdf(output_path, stylesheets=[css])
 
         print(f"✅ PDF généré avec succès : {output_path}")
 
